@@ -99,7 +99,7 @@ function App() {
   return (
     <div className={`min-h-screen ${
       isDarkMode 
-        ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' 
+        ? 'bg-gradient-to-br from-purple-900 via-gray-700 to-cyan-900' 
         : 'bg-gradient-to-br from-yellow-300 via-cyan-50 to-yellow-100'
     } flex items-center justify-center p-4 transition-colors duration-700`}>
       <div className="w-full max-w-3xl">
@@ -118,7 +118,7 @@ function App() {
           <div className="absolute inset-0 overflow-hidden">
             <div className={`absolute inset-0 opacity-10 bg-gradient-to-br 
               ${isDarkMode 
-                ? 'from-purple-800 via-pink-900 to-gray-700'
+                ? 'from-cyan-800 via-pink-900 to-cyan-700'
                 : 'from-cyan-500 via-pink-900 to-cyan-900'
               } transition-colors duration-700`} 
             />
