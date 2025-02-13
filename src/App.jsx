@@ -84,7 +84,7 @@ function App() {
           <div className="absolute inset-0 overflow-hidden">
             <div className={`absolute inset-0 opacity-10 bg-gradient-to-br 
               ${isDarkMode 
-                ? 'from-purple-600 via-pink-900 to-orange-600'
+                ? 'from-purple-800 via-pink-900 to-gray-700'
                 : 'from-cyan-500 via-pink-900 to-cyan-900'
               } transition-colors duration-700`} 
             />
@@ -99,15 +99,14 @@ function App() {
               <h1 className={`text-4xl sm:text-5xl font-bold ${
                 isDarkMode 
                   ? 'text-white' 
-                  : 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600'
+                  : 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-cyan-800'
               } mb-3 tracking-tight`}>
-                Task Manager
+                Todo List
               </h1>
-              <div className={`flex items-center gap-2 ${
+              <div className={`flex items-center text-lg ${
                 isDarkMode ? 'text-slate-300' : 'text-slate-600'
               }`}>
-                <SparklesIcon className="w-5 h-5" />
-                <span>Create and manage your daily tasks</span>
+                <span>Create your new tasks</span>
               </div>
             </motion.div>
 
