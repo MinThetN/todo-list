@@ -154,7 +154,7 @@ function App() {
                   type="text"
                   value={newTodo}
                   onChange={(e) => setNewTodo(e.target.value)}
-                  placeholder="What's your next task?"
+                  placeholder="Task Title"
                   className={`w-full px-6 py-4 ${
                     isDarkMode 
                       ? 'bg-slate-700/50 text-white placeholder:text-slate-400' 
@@ -171,7 +171,7 @@ function App() {
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Add some details... (optional)"
+                  placeholder="Description"
                   rows="3"
                   className={`w-full px-6 py-4 ${
                     isDarkMode 
@@ -184,7 +184,7 @@ function App() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-cyan-800 rounded-2xl 
+                className="w-full py-4 bg-gradient-to-r from-cyan-700 to-cyan-900 rounded-xl 
                   text-white font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/40 
                   transition-shadow flex items-center justify-center gap-2"
               >
