@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PlusIcon, TrashIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, TrashIcon, PencilIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import TimeDisplay from './components/TimeDisplay'
 import './App.css'
 
@@ -13,6 +13,9 @@ function App() {
   const [newTodo, setNewTodo] = useState('')
   const [description, setDescription] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [editText, setEditText] = useState('')
+  const [editDescription, setEditDescription] = useState('')
 
   // Save todos to localStorage whenever they change
   useEffect(() => {
@@ -60,6 +63,37 @@ function App() {
 
   const deleteTodo = (id) => {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id))
+  }
+
+  const startEditing = (todo) => {
+    setEditingId(todo.id)
+    setEditText(todo.text)
+    setEditDescription(todo.description || '')
+  }
+
+  const cancelEditing = () => {
+    setEditingId(null)
+    setEditText('')
+    setEditDescription('')
+  }
+
+  const saveEdit = (id) => {
+    const trimmedText = editText.trim()
+    if (!trimmedText) return
+
+    setTodos(prevTodos =>
+      prevTodos.map(todo =>
+        todo.id === id
+          ? {
+              ...todo,
+              text: trimmedText,
+              description: editDescription.trim(),
+              updatedAt: new Date().toISOString()
+            }
+          : todo
+      )
+    )
+    setEditingId(null)
   }
 
   return (
@@ -173,38 +207,95 @@ function App() {
                         : 'bg-white/50 hover:border-purple-300/20'
                     } backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-transparent`}
                   >
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="checkbox"
-                        checked={todo.completed}
-                        onChange={() => toggleTodo(todo.id)}
-                        className="w-5 h-5 rounded-lg border-purple-300 text-purple-500 
-                          focus:ring-purple-500 transition-colors"
-                      />
-                      <div className="flex-1">
-                        <h3 className={`text-lg font-medium ${
-                          todo.completed ? 'text-slate-400 line-through' : 'text-slate-700'
-                        } transition-colors`}>
-                          {todo.text}
-                        </h3>
-                        {todo.description && (
-                          <p className={`mt-1 text-sm ${
-                            todo.completed ? 'text-slate-400' : 'text-slate-500'
-                          }`}>
-                            {todo.description}
-                          </p>
-                        )}
+                    {editingId === todo.id ? (
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          className={`w-full px-4 py-2 rounded-xl ${
+                            isDarkMode 
+                              ? 'bg-slate-600/50 text-white placeholder:text-slate-400' 
+                              : 'bg-white/50 text-slate-700 placeholder:text-slate-400'
+                          } backdrop-blur-sm border border-transparent focus:border-cyan-400/50 outline-none`}
+                        />
+                        <textarea
+                          value={editDescription}
+                          onChange={(e) => setEditDescription(e.target.value)}
+                          placeholder="Description (optional)"
+                          rows="2"
+                          className={`w-full px-4 py-2 rounded-xl ${
+                            isDarkMode 
+                              ? 'bg-slate-600/50 text-white placeholder:text-slate-400' 
+                              : 'bg-white/50 text-slate-600 placeholder:text-slate-400'
+                          } backdrop-blur-sm border border-transparent focus:border-cyan-400/50 outline-none resize-none`}
+                        />
+                        <div className="flex justify-end gap-2">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => saveEdit(todo.id)}
+                            className="p-2 bg-cyan-500 text-white rounded-xl hover:bg-cyan-600 transition-colors"
+                          >
+                            <CheckIcon className="w-5 h-5" />
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={cancelEditing}
+                            className="p-2 bg-slate-500 text-white rounded-xl hover:bg-slate-600 transition-colors"
+                          >
+                            <XMarkIcon className="w-5 h-5" />
+                          </motion.button>
+                        </div>
                       </div>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => deleteTodo(todo.id)}
-                        className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 
-                          transition-all duration-200"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </motion.button>
-                    </div>
+                    ) : (
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="checkbox"
+                          checked={todo.completed}
+                          onChange={() => toggleTodo(todo.id)}
+                          className="w-5 h-5 rounded-lg border-cyan-300 text-cyan-500 
+                            focus:ring-cyan-500 transition-colors"
+                        />
+                        <div className="flex-1">
+                          <h3 className={`text-lg font-medium ${
+                            todo.completed 
+                              ? 'text-slate-400 line-through' 
+                              : isDarkMode ? 'text-white' : 'text-slate-700'
+                          } transition-colors`}>
+                            {todo.text}
+                          </h3>
+                          {todo.description && (
+                            <p className={`mt-1 text-sm ${
+                              todo.completed 
+                                ? 'text-slate-400' 
+                                : isDarkMode ? 'text-slate-300' : 'text-slate-500'
+                            }`}>
+                              {todo.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => startEditing(todo)}
+                            className="text-slate-400 hover:text-cyan-500 transition-colors"
+                          >
+                            <PencilIcon className="w-5 h-5" />
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => deleteTodo(todo.id)}
+                            className="text-slate-400 hover:text-red-500 transition-colors"
+                          >
+                            <TrashIcon className="w-5 h-5" />
+                          </motion.button>
+                        </div>
+                      </div>
+                    )}
                   </motion.div>
                 ))}
               </AnimatePresence>
